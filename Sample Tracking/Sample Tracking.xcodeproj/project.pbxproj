@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9A2E6CFC1D62222D006C3A84 /* example.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A2E6CF91D62222D006C3A84 /* example.m */; };
+		9A2E6CFD1D62222D006C3A84 /* NSData+CommonCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A2E6CFB1D62222D006C3A84 /* NSData+CommonCrypto.m */; };
+		9A4544571D58A9440033CE07 /* Api_Issues.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 9A4544561D58A9440033CE07 /* Api_Issues.rtf */; };
 		9A53F88E1D507C57004BC04A /* IPAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A53F88D1D507C57004BC04A /* IPAddress.m */; };
 		9A53F8911D507DDD004BC04A /* PortMapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A53F8901D507DDD004BC04A /* PortMapper.m */; };
 		9A53F8971D5080FF004BC04A /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A53F8941D5080FF004BC04A /* GCDAsyncUdpSocket.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -22,6 +25,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9A2E6CF91D62222D006C3A84 /* example.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = example.m; sourceTree = "<group>"; };
+		9A2E6CFA1D62222D006C3A84 /* NSData+CommonCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+CommonCrypto.h"; sourceTree = "<group>"; };
+		9A2E6CFB1D62222D006C3A84 /* NSData+CommonCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+CommonCrypto.m"; sourceTree = "<group>"; };
+		9A4544561D58A9440033CE07 /* Api_Issues.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Api_Issues.rtf; sourceTree = "<group>"; };
 		9A53F88C1D507C57004BC04A /* IPAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IPAddress.h; sourceTree = "<group>"; };
 		9A53F88D1D507C57004BC04A /* IPAddress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IPAddress.m; sourceTree = "<group>"; };
 		9A53F88F1D507DDD004BC04A /* PortMapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PortMapper.h; sourceTree = "<group>"; };
@@ -58,6 +65,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9A2E6CF81D62222D006C3A84 /* CommonCrypto */ = {
+			isa = PBXGroup;
+			children = (
+				9A2E6CF91D62222D006C3A84 /* example.m */,
+				9A2E6CFA1D62222D006C3A84 /* NSData+CommonCrypto.h */,
+				9A2E6CFB1D62222D006C3A84 /* NSData+CommonCrypto.m */,
+			);
+			path = CommonCrypto;
+			sourceTree = "<group>";
+		};
 		9A53F8921D5080FF004BC04A /* Stunt */ = {
 			isa = PBXGroup;
 			children = (
@@ -96,6 +113,7 @@
 				9A53F8901D507DDD004BC04A /* PortMapper.m */,
 				9A53F88C1D507C57004BC04A /* IPAddress.h */,
 				9A53F88D1D507C57004BC04A /* IPAddress.m */,
+				9A4544561D58A9440033CE07 /* Api_Issues.rtf */,
 				9A75BEAD1D47C12000473546 /* Assets.xcassets */,
 				9A75BEAF1D47C12000473546 /* MainMenu.xib */,
 				9A75BEB21D47C12000473546 /* Info.plist */,
@@ -115,6 +133,7 @@
 		9A75BEB81D47C12F00473546 /* Tracking and PAyments APi Classes */ = {
 			isa = PBXGroup;
 			children = (
+				9A2E6CF81D62222D006C3A84 /* CommonCrypto */,
 				9A75BEB91D47C12F00473546 /* CBCommonApiManager.h */,
 				9A75BEBA1D47C12F00473546 /* CBCommonApiManager.m */,
 				9A75BEBB1D47C12F00473546 /* CBDeviceAssociation.h */,
@@ -186,6 +205,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9A75BEAE1D47C12000473546 /* Assets.xcassets in Resources */,
+				9A4544571D58A9440033CE07 /* Api_Issues.rtf in Resources */,
 				9A75BEB11D47C12000473546 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -197,6 +217,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9A2E6CFC1D62222D006C3A84 /* example.m in Sources */,
 				9A53F8981D5080FF004BC04A /* STUNClient.m in Sources */,
 				9A75BEAC1D47C12000473546 /* main.m in Sources */,
 				9A53F8971D5080FF004BC04A /* GCDAsyncUdpSocket.m in Sources */,
@@ -204,6 +225,7 @@
 				9A75BEC41D47C12F00473546 /* CBUser.m in Sources */,
 				9A75BEA91D47C12000473546 /* AppDelegate.m in Sources */,
 				9A53F88E1D507C57004BC04A /* IPAddress.m in Sources */,
+				9A2E6CFD1D62222D006C3A84 /* NSData+CommonCrypto.m in Sources */,
 				9A75BEC31D47C12F00473546 /* CBOrder.m in Sources */,
 				9A75BEC21D47C12F00473546 /* CBDeviceAssociation.m in Sources */,
 				9A75BEC11D47C12F00473546 /* CBCommonApiManager.m in Sources */,

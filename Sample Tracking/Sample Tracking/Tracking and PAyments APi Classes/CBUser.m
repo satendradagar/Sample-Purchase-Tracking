@@ -12,48 +12,48 @@
 
 #define kDefaultsUserID @"UserID"
 @implementation CBUser
+
     //username, name, email , phone, password, additionalInfo
-+ (void) registerNewUserWithUserInfo:(NSDictionary *)registrationInfo{
++ (void) registerNewUserWithUserInfo:(NSDictionary *)registrationInfo completion:(void(^)(NSDictionary *response,NSError *error))completion{
 
     NSDictionary *localDetails = [registrationInfo copy];
     [CBCommonApiManager performPostAtSuffixUrl:@"user/register" parameters:registrationInfo success:^(id responseObject) {
         
-        NSDictionary *response = (NSDictionary *)responseObject;
-        NSString *result = [response objectForKey:@"result"];
-//        "registrationID": 4
-        NSNumber *regId = [response objectForKey:@"registrationID"];
+        [CBCommonApiManager encryptAndSaveRegistration:registrationInfo atFile:kUserDataFile];
+
+//        NSDictionary *response = (NSDictionary *)responseObject;
+//        NSString *result = [response objectForKey:@"result"];
+//        NSNumber *regId = [response objectForKey:@"registrationID"];
         
-        NSLog(@"MSG: %@",result);
-        if (regId) {
-            
-            [[NSUserDefaults standardUserDefaults] setObject:regId forKey:kDefaultsUserID];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            
-            NSDictionary *deviceActivationInfo = @{
-                                                    @"user_id":regId,
-                                                    @"userEmailID":[localDetails objectForKey:@"email"],
-                                                    @"deviceDetail":[localDetails objectForKey:@"additionalInfo"]
-                                                   
-                                                   };
-            [CBDeviceAssociation registerDeviceDetailsWithUserDetails:deviceActivationInfo];
-        }
-        else
-            {
-            
-                NSDictionary *deviceActivationInfo = @{
-                                                       @"userEmailID":[localDetails objectForKey:@"email"],
-                                                       @"deviceDetail":[localDetails objectForKey:@"additionalInfo"]
-                                                       
-                                                       };
-                [CBDeviceAssociation registerDeviceDetailsWithUserDetails:deviceActivationInfo];
-            }
-        
+        completion(responseObject, nil);
+
         
     } failure:^(NSError *error) {
         
+        completion(nil, error);
+
         NSLog(@"Error %@",error);
     }];
 
 }
 
++ (void)signInUserWithId:(NSString *)userId password:(NSString *)password completion:(void(^)(NSDictionary *response,NSError *error))completion{
+    
+    
+}
+
++(CBUser *)currentUser{
+    
+    NSDictionary *deviceDict = [CBCommonApiManager decryptedDataAtFile:kUserDataFile];
+    if (deviceDict) {
+        CBUser *da = [CBUser new];
+        da.userName = [deviceDict objectForKey:@"username"];
+        da.emailId = [deviceDict objectForKey:@"email"];
+        da.name = [deviceDict objectForKey:@"name"];
+        da.phoneNumber = [deviceDict objectForKey:@"phone"];
+        return da;
+    }
+    return nil;
+    
+}
 @end

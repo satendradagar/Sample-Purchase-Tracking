@@ -10,7 +10,7 @@
 #import "CBCommonApiManager.h"
 
 #define kDefaultsIsRegisteredDevice @"IS_Tracking_Intiated"
-#define kAPI_PRODUCT_UNIQUE_CODE @"macOptimum1"
+#define kAPI_PRODUCT_UNIQUE_CODE @"smartLister"
 @implementation CBDeviceAssociation
 
 +(BOOL) isDeviceRegistered{
@@ -26,11 +26,71 @@
     }
     else{
         
-        [CBDeviceAssociation registerDeviceDetailsWithUserDetails:userKeys];
+        [CBDeviceAssociation registerDeviceDetailsWithUserDetails:userKeys completion:nil];
     }
 }
 
-+(void)registerDeviceDetailsWithUserDetails:(NSDictionary *)userKeys{
++(CBDeviceAssociation *)currentDevice{
+   
+    NSDictionary *deviceDict = [CBCommonApiManager decryptedDataAtFile:kDeviceDataFile];
+
+    if (deviceDict) {
+        
+        CBDeviceAssociation *da = [CBDeviceAssociation new];
+        da.userDeviceID = [deviceDict objectForKey:@"userEmailID"];
+        da.hardwareID = [deviceDict objectForKey:@"hardwareID"];
+        da.serialNumber = [deviceDict objectForKey:@"serialNumber"];
+        da.hostName = [deviceDict objectForKey:@"hostName"];
+        da.userEmailID = [deviceDict objectForKey:@"userEmailID"];
+        da.macVersion = [deviceDict objectForKey:@"macVersion"];
+        da.modelName = [deviceDict objectForKey:@"modelName"];
+        return da;
+    }
+    return nil;
+    
+}
+
++(void)updateDetailsForCurrentDevice:(NSDictionary *)updateParams completion:(void(^)(NSDictionary *response,NSError *error))completion{
+
+//    NSString *deviceUUID = [CBDeviceAssociation getSystemUUID];
+    NSString *hostName = [[NSHost currentHost] localizedName];
+    NSString * macVersion = [[NSProcessInfo processInfo] operatingSystemVersionString];
+
+    NSString *serialNumber = [CBDeviceAssociation getSerialNumber];
+    
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithDictionary:@{
+                                @"serialNumber": serialNumber,
+                                @"hostName": hostName,
+                                @"macVersion": macVersion
+                                }];
+    [parameters addEntriesFromDictionary:updateParams];
+    [CBCommonApiManager performPostAtSuffixUrl:[NSString stringWithFormat:@"device/update/%@",serialNumber] parameters:parameters success:^(id responseObject) {
+        
+        NSDictionary *response = (NSDictionary *)responseObject;
+        NSLog(@"MSG: %@",[response objectForKey:@"message"]);
+        NSLog(@"Track: %@",response);
+        if ([[response objectForKey:@"message"] isEqualToString:@"Success"]) {
+            
+                //Stored successfully
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kDefaultsIsRegisteredDevice];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            [self getDeviceDetailsForCurrentDevice:^(NSDictionary *response, NSError *error) {
+                NSLog(@"Updated local values");
+            }];
+        }
+        
+        completion(response, nil);
+    } failure:^(NSError *error) {
+        
+        completion(nil, error);
+
+        NSLog(@"Error %@",error);
+        
+    }];
+    
+}
+
++(void)registerDeviceDetailsWithUserDetails:(NSDictionary *)userKeys  completion:(void(^)(NSDictionary *response,NSError *error))completion{
     
     NSString *deviceUUID = [CBDeviceAssociation getSystemUUID];
     NSString *hostName = [[NSHost currentHost] localizedName];
@@ -48,18 +108,21 @@
 //    user_id userEmailID deviceDetail
     NSString *serialNumber = [CBDeviceAssociation getSerialNumber];
 
-        NSDictionary *parameters = @{
-              @"user_id": [userKeys objectForKey:@"user_id"],
-              @"userDeviceID": deviceUUID,
-              @"hardwareID": kAPI_PRODUCT_UNIQUE_CODE,
-              @"serialNumber": serialNumber,
-              @"deviceDetail": [userKeys objectForKey:@"deviceDetail"],
-              @"hostName": hostName,
-              @"userEmailID": [userKeys objectForKey:@"userEmailID"],
-              @"macVersion": macVersion,
-              @"modelName": modelName
-        };
-    
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithDictionary:@{
+                                                                                      @"userDeviceID": deviceUUID,
+                                                                                      @"hardwareID": kAPI_PRODUCT_UNIQUE_CODE,
+                                                                                      @"serialNumber": serialNumber,
+                                                                                      @"hostName": hostName,
+                                                                                      @"macVersion": macVersion,
+                                                                                      @"modelName": modelName
+                                                                                      }];
+    if (userKeys) {
+        [parameters setObject:[userKeys objectForKey:@"user_id"] forKey:@"user_id"];
+            //                      @"deviceDetail": [userKeys objectForKey:@"deviceDetail"],
+//        @"userEmailID": [userKeys objectForKey:@"userEmailID"],
+
+
+    }
     [CBCommonApiManager performPostAtSuffixUrl:@"device/add" parameters:parameters success:^(id responseObject) {
         
         NSDictionary *response = (NSDictionary *)responseObject;
@@ -70,15 +133,50 @@
                 //Stored successfully
             [[NSUserDefaults standardUserDefaults] setBool:yearMask forKey:kDefaultsIsRegisteredDevice];
             [[NSUserDefaults standardUserDefaults] synchronize];
+            [CBCommonApiManager encryptAndSaveRegistration:parameters atFile:kDeviceDataFile];
         }
-    
+        completion(response, nil);
         
     } failure:^(NSError *error) {
 
+        completion(nil, error);
         NSLog(@"Error %@",error);
 
     }];
     
+}
+
++(void)getDeviceDetailsForCurrentDevice:(void(^)(NSDictionary *response,NSError *error))completion{
+        //    user_id userEmailID deviceDetail
+    NSString *serialNumber = [CBDeviceAssociation getSerialNumber];
+    [CBCommonApiManager performGetAtSuffixUrl:[NSString stringWithFormat:@"device/%@",serialNumber]  success:^(id responseObject) {
+            //Stored successfully
+//        [[NSUserDefaults standardUserDefaults] setBool:yearMask forKey:kDefaultsIsRegisteredDevice];
+//        [[NSUserDefaults standardUserDefaults] synchronize];
+        [CBCommonApiManager encryptAndSaveRegistration:responseObject atFile:kDeviceDataFile];
+
+        completion(responseObject,nil);
+        
+    } failure:^(NSError *error) {
+        
+        completion(nil,error);
+
+    }];
+    
+}
+
++ (void)fetchUserDevicesForEmail:(NSString *)userEmail completion:(void(^)(NSDictionary *response,NSError *error))completion{
+    
+    
+    [CBCommonApiManager performGetAtSuffixUrl:[NSString stringWithFormat:@"devices/%@",userEmail] success:^(id responseObject) {
+        
+        completion(responseObject, nil);
+        
+    } failure:^(NSError *error) {
+        
+        completion(nil, error);
+        
+    }];
 }
 
 

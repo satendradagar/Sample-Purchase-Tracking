@@ -11,6 +11,7 @@
 #import "PortMapper.h"
 #import "STUNClient.h"
 #import "GCDAsyncUdpSocket.h"
+#import "CBDeviceAssociation.h"
 
 @interface AppDelegate ()
 {
@@ -25,52 +26,12 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application
-//    NSLog(@"Addresses: %@", [[NSHost currentHost] addresses]);
-//   NSString * publicAddressString = [PortMapper findPublicAddress];
-
-        //   NSLog(@"Addresses: %@", publicAddressString);
-        // request public IP and Port through STUN
-//    udpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
-//    
-//    
-//    stunClient = [[STUNClient alloc] init];
-//    [stunClient requestPublicIPandPortWithUDPSocket:udpSocket delegate:self];
-//    
-//    for (NSString *s in [[NSHost currentHost] addresses]) {
-//        IPAddress *addr = [[IPAddress alloc] initWithString:s];
-//        if (![addr isLocalHost] && [addr isIPV4]) {
-//                // do something
-//            NSLog(@"%@",addr.IPAddress);
-//        }
-//    }
-    
-    NSURL *iPURL = [NSURL URLWithString:@"http://ip-api.com/json"];
-    NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:iPURL];
-        //    [httpClient setDefaultHeader:@"Accept" value:@"text/json"];
-    [req setValue:@"text/json" forHTTPHeaderField:@"Accept"];
-    [req setHTTPMethod:@"GET"];
-    req.timeoutInterval = 45;
-    
-    [NSURLConnection sendAsynchronousRequest:req queue:[NSOperationQueue currentQueue] completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
+        //                      @"deviceDetail": [userKeys objectForKey:@"deviceDetail"],
+        //        @"userEmailID": [userKeys objectForKey:@"userEmailID"],
+    [CBDeviceAssociation registerDeviceDetailsWithUserDetails:@{@"deviceDetail": @"Hello sample",@"userEmailID": @"satendradagar@gmail.com",@"user_id": @"satendradagar@gmail.com"}];
+    [CBDeviceAssociation getDeviceDetailsForCurrentDevice:^(NSDictionary *response, NSError *error) {
         
-        if (nil != data) {
-            
-            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-            if (dict) {
-                NSLog(@"Response: %@",dict);
-//                responseHandler([dict objectForKey:@"query"]);//Successfull case
-            }
-            else{
-                
-//                responseHandler(nil);
-            }
-        }
-        else{
-//            responseHandler(nil);
-            
-        }
     }];
-
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

@@ -36,7 +36,7 @@
 //    order.isReceiptVerified = @1;
 
     order.planPrice = @100;
-    order.statusSequence = @"I-A-S";
+    order.statusSequence = @"I";
     order.userDeviceID = [CBDeviceAssociation getSerialNumber];
 //    order.receiptData = @"";
     order.expiryDate = [NSDate date];
@@ -44,7 +44,155 @@
     
 }
 
-+ (void) addNewOrderWithUser:(NSString *)emailID andTransationId:(NSString *)transactionID{
++ (void)updateOrder:(CBOrder *)pre completion:(void(^)(NSDictionary *response,NSError *error))completion{
+    
+    NSAssert(nil != pre.orderPaymentID, @"Payment does not have any associtaed 'orderPaymentID'");
+    NSMutableDictionary *dictionary = [NSMutableDictionary new];
+    
+    if (pre.transactionCountry) {
+        
+        [dictionary setValue:pre.transactionCountry forKey:@"transactionCountry"];
+    }
+    
+    if (pre.purchaseDate) {
+        
+        [dictionary setValue:[pre.purchaseDate description] forKey:@"purchaseDate"];
+        
+    }
+    
+    
+    if (pre.orderPaymentID) {
+        
+        [dictionary setValue:pre.orderPaymentID forKey:@"orderPaymentID"];
+        
+    }
+    
+    if (pre.appleTransactionID) {
+        
+        [dictionary setValue:pre.appleTransactionID forKey:@"appleTransactionID"];
+        
+    }
+    
+    
+    if (pre.associatedProductID) {
+        
+        [dictionary setValue:pre.associatedProductID forKey:@"associatedProductID"];
+        
+    }
+    
+    
+    if (pre.isTrialPlan) {
+        
+        [dictionary setValue:pre.isTrialPlan forKey:@"isTrialPlan"];
+        
+    }
+    
+    
+    if (pre.isPaymentSuccess) {
+        
+        [dictionary setValue:pre.isPaymentSuccess forKey:@"isPaymentSuccess"];
+        
+    }
+    
+    
+    if (pre.isUserInitiated) {
+        
+        [dictionary setValue:pre.isUserInitiated forKey:@"isUserInitiated"];
+        
+    }
+    
+    
+    if (pre.isUserCanceled) {
+        
+        [dictionary setValue:pre.isUserCanceled forKey:@"isUserCanceled"];
+        
+    }
+    
+    if (pre.isPaymentFailed) {
+        
+        [dictionary setValue:pre.isPaymentFailed forKey:@"isPaymentFailed"];
+        
+    }
+    
+    if (pre.planPrice) {
+        
+        [dictionary setValue:pre.planPrice forKey:@"planPrice"];
+        
+    }
+    
+    
+    if (pre.statusSequence) {
+        
+        [dictionary setValue:pre.statusSequence forKey:@"statusSequence"];
+        
+    }
+    
+    
+    if (pre.userDeviceID) {
+        
+        [dictionary setValue:pre.userDeviceID forKey:@"userDeviceID"];
+        
+    }
+    
+    if (pre.linkedUserEmail) {
+        
+        [dictionary setValue:pre.linkedUserEmail forKey:@"linkedUserEmail"];
+        
+    }
+    
+    
+    if (pre.appleID) {
+        
+        [dictionary setValue:pre.appleID forKey:@"appleID"];
+        
+    }
+    
+    
+    if (pre.receiptData) {
+        
+        [dictionary setValue:pre.receiptData forKey:@"receiptData"];
+        
+    }
+    
+    
+    if (pre.receiptData) {
+        
+        [dictionary setValue:pre.receiptData forKey:@"receiptData"];
+        
+    }
+    
+    
+    if (pre.expiryDate) {
+        
+        [dictionary setValue:[pre.expiryDate description] forKey:@"expiryDate"];
+        
+    }
+    
+    
+    [CBCommonApiManager performPostAtSuffixUrl:[@"order/update" stringByAppendingPathComponent:pre.orderPaymentID] parameters:dictionary success:^(id responseObject) {
+        
+        NSDictionary *response = (NSDictionary *)responseObject;
+        NSLog(@"MSG: %@",[response objectForKey:@"message"]);
+        NSLog(@"Track: %@",response);
+        if ([[response objectForKey:@"message"] isEqualToString:@"Success"]) {
+            
+                //Stored successfully
+            [[NSUserDefaults standardUserDefaults] setBool:yearMask forKey:kDefaultsIsOrderPlaced];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+        completion(dictionary, nil);
+        
+    } failure:^(NSError *error) {
+        
+        completion(nil, error);
+        NSLog(@"Error %@",error);
+        
+    }];
+    
+
+}
+
++ (void) addNewOrderWithUser:(NSString *)emailID andTransationId:(NSString *)transactionID completion:(void(^)(NSDictionary *response,NSError *error))completion{
 
     CBOrder *pre = [CBOrder prefilledObject];
     pre.linkedUserEmail = emailID;
@@ -183,29 +331,64 @@
             [[NSUserDefaults standardUserDefaults] setBool:yearMask forKey:kDefaultsIsOrderPlaced];
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
-        
+        completion(dictionary, nil);
         
     } failure:^(NSError *error) {
         
+        completion(nil, error);
         NSLog(@"Error %@",error);
         
     }];
 
 }
 
-+ (void) addNewOrderAndRegisterDeviceWithUser:(NSString *)emailID andTransationId:(NSString *)transactionID{
+//+ (void) addNewOrderAndRegisterDeviceWithUser:(NSString *)emailID andTransationId:(NSString *)transactionID{
+//
+//    NSDictionary *userDict = @{
+//       
+//       @"user_id":emailID,
+//       @"userEmailID":emailID,
+//       @"deviceDetail":transactionID
+//       
+//    };
+//    
+//    [CBDeviceAssociation registerDeviceDetailsWithUserDetails:userDict completion:^(NSDictionary *response, NSError *error) {
+//        
+//    }];
+//    
+//    [self addNewOrderAndRegisterDeviceWithUser:emailID andTransationId:transactionID];
+//    
+//}
 
-    NSDictionary *userDict = @{
-       
-       @"user_id":emailID,
-       @"userEmailID":emailID,
-       @"deviceDetail":transactionID
-       
-    };
++(void)getOrder:(NSString *)orderId completion:(void(^)(NSDictionary *response,NSError *error))completion{
     
-    [CBDeviceAssociation registerDeviceDetailsWithUserDetails:userDict];
+    [CBCommonApiManager performGetAtSuffixUrl:[NSString stringWithFormat:@"order/%@",orderId] success:^(id responseObject) {
+        
+        completion(responseObject, nil);
+        
+    } failure:^(NSError *error) {
+        
+        completion(nil, error);
+
+    }];
+}
+
+
++(void)getAllOrdersForDevice:(CBDeviceAssociation *)device completion:(void(^)(NSDictionary *response,NSError *error))completion{
     
-    [self addNewOrderAndRegisterDeviceWithUser:emailID andTransationId:transactionID];
+    [CBCommonApiManager performGetAtSuffixUrl:[NSString stringWithFormat:@"order/%@",device.userDeviceID] success:^(id responseObject) {
+        
+        completion(responseObject, nil);
+        
+    } failure:^(NSError *error) {
+        
+        completion(nil, error);
+        
+    }];
+
+}
+
++(void)getAllOrdersForUser:(CBUser *)user completion:(void(^)(NSDictionary *response,NSError *error))completion{
     
 }
 @end

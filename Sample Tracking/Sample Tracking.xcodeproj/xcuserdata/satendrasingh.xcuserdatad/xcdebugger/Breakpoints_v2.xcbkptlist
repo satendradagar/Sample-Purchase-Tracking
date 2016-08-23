@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sample Tracking/Tracking and PAyments APi Classes/CBCommonApiManager.m"
+            timestampString = "492085072.054963"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "53"
+            endingLineNumber = "53"
+            landmarkName = "+performRequestAtSuffixUrl:parameters:success:failure:htttpMethod:"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "+[CBCommonApiManager performRequestAtSuffixUrl:parameters:success:failure:htttpMethod:]"
+                  moduleName = "Sample Tracking"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/satendrasingh/Documents/CB-Products/Tracking%20Api%20Sample/Sample%20Tracking/Sample%20Tracking/Tracking%20and%20PAyments%20APi%20Classes/CBCommonApiManager.m"
+                  timestampString = "492085214.14259"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "54"
+                  endingLineNumber = "54"
+                  offsetFromSymbolStart = "694">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__87+[CBCommonApiManager performRequestAtSuffixUrl:parameters:success:failure:htttpMethod:]_block_invoke"
+                  moduleName = "Sample Tracking"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/satendrasingh/Documents/CB-Products/Tracking%20Api%20Sample/Sample%20Tracking/Sample%20Tracking/Tracking%20and%20PAyments%20APi%20Classes/CBCommonApiManager.m"
+                  timestampString = "492085214.143078"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "56"
+                  endingLineNumber = "56"
+                  offsetFromSymbolStart = "109">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sample Tracking/Tracking and PAyments APi Classes/CBCommonApiManager.m"
+            timestampString = "492085074.326683"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "56"
+            endingLineNumber = "56"
+            landmarkName = "+performRequestAtSuffixUrl:parameters:success:failure:htttpMethod:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

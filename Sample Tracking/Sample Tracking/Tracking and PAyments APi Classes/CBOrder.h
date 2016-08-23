@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "CBDeviceAssociation.h"
 
 @interface CBOrder : NSObject
 
@@ -31,8 +32,15 @@
 
 +(CBOrder *)prefilledObject;
 
-+ (void) addNewOrderWithUser:(NSString *)emailID andTransationId:(NSString *)transactionID;
++ (void) addNewOrderWithUser:(NSString *)emailID andTransationId:(NSString *)transactionID completion:(void(^)(NSDictionary *response,NSError *error))completion;
+//+ (void) addNewOrderAndDeviceWithUser:(NSString *)emailID andTransationId:(NSString *)transactionID;
+//Assign order id and updated optional values and call the method
++ (void)updateOrder:(CBOrder *)order completion:(void(^)(NSDictionary *response,NSError *error))completion;
++(void)getOrder:(NSString *)orderId completion:(void(^)(NSDictionary *response,NSError *error))completion;
 
-+ (void) addNewOrderAndDeviceWithUser:(NSString *)emailID andTransationId:(NSString *)transactionID;
++(void)getAllOrdersForDevice:(CBDeviceAssociation *)device completion:(void(^)(NSDictionary *response,NSError *error))completion;
++(void)getAllOrdersForUser:(CBUser *)user completion:(void(^)(NSDictionary *response,NSError *error))completion;
+
+
 
 @end
